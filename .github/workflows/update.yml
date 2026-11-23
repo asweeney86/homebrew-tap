@@ -42,6 +42,11 @@ jobs:
     if: needs.update.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: macos-15
     steps:
+      # The run starts on the commit that triggered it, which predates the cask the update job
+      # just pushed, so check out the tip of main for brew to tap.
+      - uses: actions/checkout@v5
+        with:
+          ref: main
       - uses: Homebrew/actions/setup-homebrew@main
       - run: brew install --cask asweeney86/tap/lorimer
       - name: Check the app and the command-line tool
